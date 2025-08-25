@@ -3,4 +3,4 @@
 2-assembler`: Generates the assembly code of a C file, saving it with a `.s` extension.
 3-name`: Compiles a C file and creates an executable named `cisfun`.
 4-puts.c`: C program that prints a string using the function `puts`.
-`5-printf.c`: C program that prints a string using the function `printf`.
+5-printf.c`: C program that prints a string using the function `printf`.
