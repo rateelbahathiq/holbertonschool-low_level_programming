@@ -4,3 +4,4 @@
 3-name`: Compiles a C file and creates an executable named `cisfun`.
 4-puts.c`: C program that prints a string using the function `puts`.
 5-printf.c`: C program that prints a string using the function `printf`.
+`6-size.c`: C program that prints the sizes of various data types.
