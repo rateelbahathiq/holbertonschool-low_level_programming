@@ -5,3 +5,4 @@
 5-print_numbers.c: prints all single digit numbers of base 10 starting from 0.
 6-print_numberz.c: prints all single digit numbers of base 10 starting from 0 without using variable of type char.
 7-print_tebahpla.c: prints the lowercase alphabet in reverse.
+8-print_base16.c: prints all the numbers of base 16 in lowercase.
