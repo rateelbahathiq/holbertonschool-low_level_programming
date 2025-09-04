@@ -1,32 +1,62 @@
 #include "main.h"
+#include <limits.h>
 
 /**
- * _atoi - converts a string to an integer
- * @s: pointer to the string
+ * _atoi - Converts a string to an integer
+ * @s: The string to convert
  *
- * Return: the integer value of the string, or 0 if none
+ * Return: The converted integer, or 0 if no digits found.
  */
 int _atoi(char *s)
 {
-	int i = 0;
-	int sign = 1;
-	int num = 0;
-	int found_digit = 0;
+	int i = 0, sign = 1, started = 0;
+	int res = 0;
 
-	/* skip non-digit characters, track sign */
-	while (s[i] != '\0')
+	/* Scan prefix: count +/- and look for first digit */
+	while (s[i] != '\0' && !started)
 	{
 		if (s[i] == '-')
-			sign *= -1;
+			sign = -sign;
+		else if (s[i] == '+')
+			; /* ignore */
 		else if (s[i] >= '0' && s[i] <= '9')
-		{
-			found_digit = 1;
-			num = num * 10 + (s[i] - '0');
-		}
-		else if (found_digit)
-			break;
-		i++;
+			started = 1; /* first digit found */
+		if (!started)
+			i++;
 	}
 
-	return (sign * num);
+	if (!started)
+		return (0);
+
+	/* Accumulate with overflow-safe checks */
+	if (sign == 1)
+	{
+		/* Build a non-negative number: res = res*10 + d */
+		for (; s[i] >= '0' && s[i] <= '9'; i++)
+		{
+			int d = s[i] - '0';
+
+			/* Guard: res*10 + d <= INT_MAX */
+			if (res > INT_MAX / 10 || (res == INT_MAX / 10 && d > INT_MAX % 10))
+				return (INT_MAX);
+
+			res = res * 10 + d;
+		}
+		return (res);
+	}
+	else
+	{
+		/* Build a negative number directly: res = res*10 - d */
+		for (; s[i] >= '0' && s[i] <= '9'; i++)
+		{
+			int d = s[i] - '0';
+
+			/* Guard: res*10 - d >= INT_MIN */
+			if (res < INT_MIN / 10 || (res == INT_MIN / 10 && d > -(INT_MIN % 10)))
+				return (INT_MIN);
+
+			res = res * 10 - d;
+		}
+		return (res);
+	}
 }
