@@ -12,7 +12,7 @@ int _atoi(char *s)
 	int i = 0, sign = 1, started = 0;
 	int res = 0;
 
-	/* scan until the first digit; count leading '-' signs */
+	/* skip to first digit or sign block */
 	while (s[i] != '\0' && !started)
 	{
 		if (s[i] == '-')
@@ -26,37 +26,25 @@ int _atoi(char *s)
 	if (!started)
 		return (0);
 
-	/* accumulate with overflow-safe guards */
-	if (sign == 1)
+	/* build result with overflow guards */
+	while (s[i] >= '0' && s[i] <= '9')
 	{
-		for (; s[i] >= '0' && s[i] <= '9'; i++)
+		int d = s[i] - '0';
+
+		if (sign == 1)
 		{
-			int d = s[i] - '0';
-
-			/* ensure res*10 + d <= INT_MAX */
-			if (res > INT_MAX / 10 ||
-			    (res == INT_MAX / 10 && d > (INT_MAX % 10)))
+			if (res > (INT_MAX - d) / 10)
 				return (INT_MAX);
-
 			res = res * 10 + d;
 		}
-		return (res);
-	}
-	else
-	{
-		/* keep result negative to represent INT_MIN safely */
-		for (; s[i] >= '0' && s[i] <= '9'; i++)
+		else
 		{
-			int d = s[i] - '0';
-			int last = -(INT_MIN % 10); /* boundary digit for INT_MIN */
-
-			/* ensure res*10 - d >= INT_MIN */
-			if (res < INT_MIN / 10 ||
-			    (res == INT_MIN / 10 && d > last))
+			if (res < (INT_MIN + d) / 10)
 				return (INT_MIN);
-
 			res = res * 10 - d;
 		}
-		return (res);
+		i++;
 	}
+
+	return (res);
 }
