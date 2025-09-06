@@ -3,45 +3,53 @@
 
 /**
  * _atoi - Convert a string to an integer.
- * @s: input C-string
+ * @s: Pointer to the input string.
  *
- * Behavior:
- * - Count all '+' and '-' before the first digit (odd '-' => negative).
- * - Ignore other chars until digits; read consecutive digits only.
- * - Return 0 if no digits.
- * - Accumulate in negative domain to avoid -INT_MIN overflow.
- * - Overflow-safe under -fsanitize=signed-integer-overflow.
+ * Description:
+ * This function converts a string into an integer by following these rules:
+ * - All characters before the first digit are scanned.
+ *   Every '-' sign flips the result sign, '+' is ignored.
+ * - The number is built digit by digit until a non-digit is reached.
+ * - If no digits are found, the function returns 0.
+ * - The result is accumulated in the negative domain to avoid overflow
+ *   when handling INT_MIN.
+ * - Safe with -fsanitize=signed-integer-overflow.
  *
- * Return: converted int value.
+ * Return: The converted integer.
  */
 int _atoi(char *s)
 {
 	int i = 0;
 	int sign = 1;
-	int res = 0; /* keep result non-positive during accumulation */
+	int res = 0; /* keep result in non-positive form during accumulation */
 
-	/* 1) Scan prefix: flip sign on each '-' before first digit */
+	/* 1) Scan prefix: count '-' and '+' before the first digit */
 	while (s[i] != '\0' && (s[i] < '0' || s[i] > '9'))
 	{
 		if (s[i] == '-')
 			sign = -sign;
-		/* '+' and other chars are ignored */
+
 		i++;
 	}
 
-	/* 2) No digits? */
+	/* 2) If no digits are found */
 	if (s[i] == '\0')
 		return (0);
 
-	/* 3) Read digit run; build as negative: res = res*10 - d */
+	/* 3) Read digit sequence */
 	while (s[i] >= '0' && s[i] <= '9')
 	{
-		int d;              /* <-- declaration only */
-		d = s[i] - '0';     /* <-- indexing moved to a separate statement */
+		int d;
 
-		/* Check underflow before res = res*10 - d */
+		d = s[i] - '0';
+
+		/* Check underflow before applying: res = res * 10 - d */
 		if (res < (INT_MIN + d) / 10)
-			return (sign == 1 ? INT_MAX : INT_MIN);
+		{
+			if (sign == 1)
+				return (INT_MAX);
+			return (INT_MIN);
+		}
 
 		res = res * 10 - d;
 		i++;
@@ -50,5 +58,6 @@ int _atoi(char *s)
 	/* 4) Apply sign */
 	if (sign == 1)
 		return (-res);
+
 	return (res);
 }
