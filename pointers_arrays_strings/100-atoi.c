@@ -2,49 +2,58 @@
 #include <limits.h>
 
 /**
- * _atoi - converts a string to an integer
- * @s: pointer to the string
+ * _atoi - Convert a string to an integer.
+ * @s: input C-string
  *
- * Return: the integer value, or 0 if none
+ * Behavior:
+ * - Count ALL '+' and '-' that appear anywhere before the first digit.
+ *   (odd number of '-' => negative; even => positive)
+ * - Ignore other characters until the first digit.
+ * - Read consecutive digits; stop at first non-digit after digits.
+ * - If no digits, return 0.
+ * - Accumulate in the negative domain to avoid -INT_MIN overflow.
+ * - Overflow-safe with -fsanitize=signed-integer-overflow.
+ *
+ * Return: converted int value.
  */
 int _atoi(char *s)
 {
-	int i = 0, sign = 1, started = 0;
-	int res = 0;
+	int i = 0;
+	int sign = 1;
+	int res = 0; /* keep result non-positive during accumulation */
 
-	/* skip to first digit or sign block */
-	while (s[i] != '\0' && !started)
+	/* 1) Scan prefix: flip sign for each '-' seen before first digit */
+	while (s[i] != '\0' && (s[i] < '0' || s[i] > '9'))
 	{
 		if (s[i] == '-')
 			sign = -sign;
-		else if (s[i] >= '0' && s[i] <= '9')
-			started = 1;
-		if (!started)
-			i++;
+		/* '+' and any other char are ignored */
+		i++;
 	}
 
-	if (!started)
+	/* 2) No digits? */
+	if (s[i] == '\0')
 		return (0);
 
-	/* build result with overflow guards */
+	/* 3) Read digit run; build as negative: res = res*10 - d */
 	while (s[i] >= '0' && s[i] <= '9')
 	{
 		int d = s[i] - '0';
 
-		if (sign == 1)
+		/* Check underflow before res = res*10 - d */
+		/* If res < (INT_MIN + d) / 10, next step would go below INT_MIN */
+		if (res < (INT_MIN + d) / 10)
 		{
-			if (res > (INT_MAX - d) / 10)
-				return (INT_MAX);
-			res = res * 10 + d;
+			/* Clamp to limits (optional, prevents UB with sanitizer) */
+			return (sign == 1 ? INT_MAX : INT_MIN);
 		}
-		else
-		{
-			if (res < (INT_MIN + d) / 10)
-				return (INT_MIN);
-			res = res * 10 - d;
-		}
+
+		res = res * 10 - d;
 		i++;
 	}
 
+	/* 4) Apply sign: res <= 0 here */
+	if (sign == 1)
+		return (-res);
 	return (res);
 }
