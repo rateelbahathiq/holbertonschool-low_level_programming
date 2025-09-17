@@ -1,0 +1,1 @@
+-0-malloc_checked.:Write a function that allocates memory using malloc.
