@@ -2,10 +2,10 @@
 
 /**
  * op_add - adds two integers
- * @a: first int
- * @b: second int
+ * @a: first integer
+ * @b: second integer
  *
- * Return: a + b
+ * Return: sum of a and b
  */
 int op_add(int a, int b)
 {
@@ -14,10 +14,10 @@ int op_add(int a, int b)
 
 /**
  * op_sub - subtracts two integers
- * @a: first int
- * @b: second int
+ * @a: first integer
+ * @b: second integer
  *
- * Return: a - b
+ * Return: difference of a and b
  */
 int op_sub(int a, int b)
 {
@@ -26,10 +26,10 @@ int op_sub(int a, int b)
 
 /**
  * op_mul - multiplies two integers
- * @a: first int
- * @b: second int
+ * @a: first integer
+ * @b: second integer
  *
- * Return: a * b
+ * Return: product of a and b
  */
 int op_mul(int a, int b)
 {
@@ -38,10 +38,10 @@ int op_mul(int a, int b)
 
 /**
  * op_div - divides two integers
- * @a: first int
- * @b: second int
+ * @a: first integer
+ * @b: second integer
  *
- * Return: a / b
+ * Return: result of division
  */
 int op_div(int a, int b)
 {
@@ -49,11 +49,11 @@ int op_div(int a, int b)
 }
 
 /**
- * op_mod - modulo of two integers
- * @a: first int
- * @b: second int
+ * op_mod - returns remainder of division
+ * @a: first integer
+ * @b: second integer
  *
- * Return: a % b
+ * Return: remainder of division
  */
 int op_mod(int a, int b)
 {
